@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNB Digital Banking</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="splash-screen" id="splashScreen">
+    <img src="images/splash-logo.png" alt="HNB Logo" class="splash-img">
+</div>
+
+    <div class="app-viewport">
+        <div class="main-slider slider-step-1" id="mainSlider">
+            
+            <section class="page" id="landingPage">
+                <div class="carousel-wrapper">
+                    <div class="carousel-track">
+                        <div class="slide"><img src="images/c1.png" alt="Promo 1"></div>
+                        <div class="slide"><img src="images/c2.png" alt="Promo 2"></div>
+                    </div>
+                    <div class="dots">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+
+                <div class="auth-section">
+                    <button class="btn-login" id="loginTrigger">Login</button>
+                    <button class="btn-register">New to Mobile Banking? Register</button>
+                </div>
+
+                <div class="bottom-nav">
+                    <div class="nav-item">
+                        <div class="icon-container">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#005696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 1l4 4-4 4"></path><path d="M3 5h18"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 19H3"></path>
+                            </svg>
+                        </div>
+                        <p>Tap and hold to<br>Peek Balance</p>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="nav-item">
+                        <div class="icon-container">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#005696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13" stroke="#ffcc00" stroke-width="3"></line>
+                                <line x1="16" y1="17" x2="8" y2="17" stroke="#00a14b" stroke-width="3"></line>
+                            </svg>
+                        </div>
+                        <p>ePassbook</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="page" id="loginPage">
+                <div class="login-header">
+                    <button class="back-btn" id="backToLanding">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    </button>
+                </div>
+                <div class="login-content">
+                    <img src="images/login-avatar.png" alt="Login" class="login-illus">
+                    <h2 class="login-title">Login</h2>
+                    <div class="input-group">
+                        <input type="text" id="username" placeholder="Username">
+                        <input type="password" id="passcode" placeholder="Passcode">
+                    </div>
+                    <a href="#" class="forgot-link">Forgot Username? or Passcode?</a>
+                    <button class="btn-login-submit" id="goToOtp" disabled>Login</button>
+                    <button class="btn-register-outline">New to Mobile Banking? Register</button>
+                </div>
+            </section>
+
+            <section class="page" id="otpPage">
+                <div class="login-header">
+                    <button class="back-btn" id="backToLogin">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    </button>
+                </div>
+                <div class="login-content">
+                    <h2 class="login-title">Verification</h2>
+                    <p style="color: #666; margin-bottom: 25px;">Please enter the 6-digit OTP sent to your device.</p>
+                    <div class="input-group">
+                        <input type="text" id="otpInput" placeholder="000000" maxlength="6" style="text-align: center; letter-spacing: 10px; font-size: 24px;">
+                    </div>
+                    <button class="btn-login-submit" id="finishAuth" style="background-color: #005696; margin-top: 20px;">Verify</button>
+                    <a href="#" class="forgot-link" style="text-align: center; margin-top: 30px;">Resend OTP</a>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
