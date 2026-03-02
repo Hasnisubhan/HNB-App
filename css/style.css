@@ -13,33 +13,6 @@ body {
     height: 100vh;
 }
 
-.splash-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff; /* Match this to your PNG background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    /* This controls the speed of the final fade out */
-    transition: opacity 0.5s ease, visibility 0.5s;
-}
-
-.splash-img {
-    width: 150px; /* Adjust size as needed */
-    height: auto;
-    display: block;
-}
-
-/* The class that triggers the exit */
-.splash-hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
 .app-viewport {
     width: 100%;
     max-width: 450px;
@@ -52,18 +25,19 @@ body {
 
 .main-slider {
     display: flex;
-    width: 300%; /* 3 pages = 300% */
+    width: 400%; /* 4 pages = 400% */
     height: 100%;
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Navigation States */
-.slider-step-1 { transform: translateX(0); }
-.slider-step-2 { transform: translateX(-33.333%); }
-.slider-step-3 { transform: translateX(-66.666%); }
+/* Horizontal Sliding Logic (25% increments for 4 pages) */
+.slider-step-0 { transform: translateX(0); }
+.slider-step-1 { transform: translateX(-25%); }
+.slider-step-2 { transform: translateX(-50%); }
+.slider-step-3 { transform: translateX(-75%); }
 
 .page {
-    width: 33.333%; /* 1/3 of the 300% width */
+    width: 25%; /* 1/4 of the slider width */
     height: 100%;
     flex-shrink: 0;
     position: relative;
@@ -71,7 +45,14 @@ body {
     flex-direction: column;
 }
 
-/* --- Carousel --- */
+/* Splash Screen Style */
+.splash-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --- Carousel on Landing Page --- */
 .carousel-wrapper { width: 100%; height: 50%; position: relative; overflow: hidden; }
 .carousel-track { display: flex; width: 200%; height: 100%; transition: transform 0.4s ease-in-out; }
 .slide { width: 50%; height: 100%; }
@@ -102,4 +83,3 @@ input:focus { border-bottom-color: #005696; }
 .forgot-link { display: block; text-align: right; color: #005696; text-decoration: none; font-weight: bold; font-size: 14px; margin-bottom: 35px; }
 .btn-login-submit { background-color: #e0e4e8; color: white; border: none; margin-bottom: 15px; }
 .btn-register-outline { background: transparent; border: 1.5px solid #005696; color: #005696; }
-               
